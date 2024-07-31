@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Delete</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .confirm-box {
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        button {
+            background-color: #d9534f;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #b52b27;
+        }
+        .cancel-button {
+            background-color: #3c50b5;
+            margin-left: 10px;
+        }
+        .cancel-button:hover {
+            background-color: #13247a;
+        }
+    </style>
+</head>
+<body>
+    <div class="confirm-box">
+        <h1>Confirm Delete</h1>
+        <p>Are you sure you want to delete the website <strong>{{ website.website_name }}</strong>?</p>
+        <form action="{% url 'delete_website' website.id %}" method="POST">
+            {% csrf_token %}
+            <button type="submit">Delete</button>
+            <a href="{% url 'list_websites' %}" class="cancel-button">Cancel</a>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,657 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Website{% endblock %}</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+        }
+
+        .header,
+        .footer {
+            background-color: #14926b;
+            color: white;
+            padding: 0;
+            text-align: center;
+            width: 100%;
+            position: fixed;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .header h1, .footer p{
+            margin: 0;
+        }
+
+        .header {
+            padding: 20px;
+            top: 0;
+        }
+
+        .footer {
+            bottom: 0;
+            padding: 20px
+        }
+
+        .content {
+            margin-top: 60px; /* Adjust based on header height */
+            margin-bottom: 60px; /* Adjust based on header and footer height */
+            padding: 20px;
+            background-color: #FFF;
+            flex: 1;
+            overflow-y: auto;
+        }
+        .main-content{
+            flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f7f7f7;
+    padding: 20px;
+    padding-left: 220px;
+    padding-top: 30px;
+    box-sizing: border-box;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 76px; /* Adjust to be below the header */
+            bottom: 58px; /* Adjust to be above the footer */
+            width: 20%;
+            left: 0;
+            background-color: #09F;
+            color: #FFF;
+            overflow-y: auto;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            background-color: #09F;
+            border-bottom: 1px solid #FFF;
+            font-weight: bold;
+        }
+
+        .sidebar ul li.active,
+        .sidebar ul li:hover {
+            background-color: #08E;
+        }
+
+        .sidebar ul li a {
+            text-decoration: none;
+            color: #FFF;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Welcome to the Home Page</h1>
+    </div>
+    
+    <div class="sidebar">
+        <ul id="tabs-nav">
+            <li><a href="{% url 'add_customer' %}">Add Customer</a></li>
+            <li><a href="{% url 'add_website' %}">Add Website</a></li>
+            <li><a href="{% url 'list_websites' %}">List Website</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        {% block content %}
+        <!-- Page specific content will go here -->
+        {% endblock %}
+    </div>
+
+    <div class="footer">
+        <p>Footer Content Here</p>
+    </div>
+</body>
+</html>
+ 
+
+
+
+<!-- {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/add_customer.css' %}">
+    <title>Vertical Tabs Interface</title>
+
+    <style>
+        body,
+        html {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: flex;
+        }
+
+        .tabs {
+            width: 20%;
+            background-color: #09F;
+            border-radius: 5px;
+            overflow: hidden;
+            color: #FFF;
+        }
+
+        ul#tabs-nav {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        ul#tabs-nav li {
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            background-color: #09F;
+            border-bottom: 1px solid #FFF;
+            font-weight: bold;
+        }
+
+        ul#tabs-nav li.active,
+        ul#tabs-nav li:hover {
+            background-color: #08E;
+        }
+
+        ul#tabs-nav li a {
+            text-decoration: none;
+            color: #FFF;
+        }
+
+        .tab-content {
+            flex: 1;
+            padding: 20px;
+            background-color: #FFF;
+            border-left: 5px solid #09F;
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .header,
+        .footer {
+            background-color: #14926b;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1,
+        .footer p {
+            margin: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        .action-button {
+            background-color: #3c50b5;
+            color: white;
+            padding: 5px 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .action-button:hover {
+            background-color: #13247a;
+        }
+
+        .delete-button {
+            background-color: #d9534f;
+        }
+
+        .delete-button:hover {
+            background-color: #b52b27;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>Welcome to the Home Page</h1>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <ul id="tabs-nav">
+                <li class="active"><a href="#tab1">Dashboard</a></li>
+                <li><a href="#tab2">Add Customer</a></li>
+                <li><a href="#tab3">Add Website</a></li>
+                <li><a href="#tab4">List Website</a></li>
+                <li><a href="#tab5">List Websites</a></li>
+            </ul>
+        </div>
+        <div id="tabs-content">
+            <div id="tab1" class="tab-content active">
+                 Content for Dashboard tab -->
+            <!-- </div>
+            <div id="tab2" class="tab-content">
+                <div class="main-content" id="add-customer-wrap">
+                    <div class="form-container">
+                        <h2>Add Customer</h2>
+                        {% if messages %}
+                        {% for message in messages %}
+                        <p
+                            class="{% if message.tags == 'error' %}error-message{% elif message.tags == 'success' %}success-message{% endif %}">
+                            {{ message }}</p>
+                        {% endfor %}
+                        {% endif %}
+                        <form method="POST" action="{% url 'add_customer' %}">
+                            {% csrf_token %}
+                            <label for="full_name">Full Name</label>
+                            <input type="text" id="full_name" name="full_name" required>
+
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password" required>
+
+                            <label for="confirm_password">Confirm Password</label>
+                            <input type="password" id="confirm_password" name="confirm_password" required>
+
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required>
+
+                            <label for="address1">Address 1</label>
+                            <input type="text" id="address1" name="address1" required>
+
+                            <label for="address2">Address 2</label>
+                            <input type="text" id="address2" name="address2">
+
+                            <label for="country">Country</label>
+                            <input type="text" id="country" name="country" required>
+
+                            <label for="city">City</label>
+                            <input type="text" id="city" name="city" required>
+
+                            <div class="button-group">
+                                <button type="submit" class="submit-button">Submit</button>
+                                <button type="button" class="cancel-button">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div id="tab3" class="tab-content">
+                <div class="main-content">
+                    <div class="form-container">
+                        <h2>Add Website</h2>
+                        {% if messages %}
+                        {% for message in messages %}
+                        <p
+                            class="{% if message.tags == 'error' %}error-message{% elif message.tags == 'success' %}success-message{% endif %}">
+                            {{ message }}</p>
+                        {% endfor %}
+                        {% endif %}
+                        <form method="POST" action="{% url 'add_website' %}">
+                            {% csrf_token %}
+                            <label for="customer_email">Select Customer</label>
+                            <select id="customer_email" name="customer_email" required>
+                                <option value="" disabled selected>Select Customer</option>
+                                {% for customer in customers %}
+                                <option value="{{ customer.email }}">{{ customer.email }}</option>
+                                {% endfor %}
+                            </select>
+
+                            <label for="website_name">Website Name</label>
+                            <input type="text" id="website_name" name="website_name" required>
+
+                            <label for="ftp_username">FTP Username</label>
+                            <input type="text" id="ftp_username" name="ftp_username" required>
+
+                            <label for="ftp_password">FTP Password</label>
+                            <input type="password" id="ftp_password" name="ftp_password" required>
+
+                            <label for="ftp_confirm_password">Confirm FTP Password</label>
+                            <input type="password" id="ftp_confirm_password" name="ftp_confirm_password" required>
+
+                            <label for="php_version">PHP Version</label>
+                            <select id="php_version" name="php_version" required>
+                                <option value="" disabled selected>Select PHP Version</option>
+                                {% for version in php_versions %}
+                                <option value="{{ version }}">{{ version }}</option>
+                                {% endfor %}
+                            </select>
+
+                            <label for="database_allowed">Database Allowed</label>
+                            <input type="number" id="database_allowed" name="database_allowed" required>
+
+                            <div class="button-group">
+                                <button type="submit" class="submit-button">Submit</button>
+                                <button type="button" class="cancel-button">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div id="tab4" class="tab-content">
+                <div class="main-content">
+                    <p>Number of websites: {{ websites.count }}</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Website Name</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for website in websites %}
+                            <tr>
+                                <td>{{ website.website_name }}</td>
+                                <td>
+                                    <a href="{% url 'update_website' website.id %}" class="action-button">Update</a>
+                                    <a href="{% url 'delete_website' website.id %}" class="action-button delete-button">Delete</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="2">No websites available.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>    
+            </div>
+            <div id="tab5" class="tab-content">
+                
+            </div>
+            <div class="footer">
+                <p>&copy; 2024 Your Website. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Show the first tab and hide the rest
+            $('#tabs-nav li:first-child').addClass('active');
+            $('.tab-content').hide();
+            $('.tab-content:first').show();
+
+            // Click function for tabs
+            $('#tabs-nav li').click(function () {
+                // Remove 'active' class from all tabs and hide all tab contents
+                $('#tabs-nav li').removeClass('active');
+                $('.tab-content').hide();
+
+                // Add 'active' class to the clicked tab
+                $(this).addClass('active');
+
+                // Get the href attribute of the clicked tab's anchor tag
+                var activeTab = $(this).find('a').attr('href');
+
+                // Show the corresponding tab content with a fade effect
+                $(activeTab).fadeIn();
+
+                // Prevent default link behavior
+                return false;
+            });
+        });
+    </script>
+</body>
+
+</html> --> 
+
+
+
+<!-- {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <link rel="stylesheet" href="{% static 'css/addcustomerstyles.css' %}">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .wrapper {
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .header, .footer {
+            background-color: #14926b;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .header h1, .footer p {
+            margin: 0;
+        }
+        .main-content {
+            flex: 1;
+            display: flex;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #eaedef;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar h3 {
+            text-align: center;
+        }
+        .sidebar button {
+            width: 100%;
+            background-color: #3c50b5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .sidebar button:hover {
+            background-color: #13247a;
+        }
+        .content {
+            flex: 1;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="header">
+            <h1>Welcome to the Home Page</h1>
+        </div>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <h3>Components</h3>
+                <button type="button" onclick="loadContent('{% url 'add_customer' %}')">Add Customer</button>
+                <form action="{% url 'add_website' %}" method="POST" style="margin-bottom: 10px;">
+                    {% csrf_token %}
+                    <button type="submit">Add Website</button>
+                </form>
+                <form action="{% url 'delete_user' %}" method="POST" style="margin-bottom: 10px;">
+                    {% csrf_token %}
+                    <button type="submit">Delete User</button>
+                </form>
+                <form action="{% url 'edit_user' %}" method="POST" style="margin-bottom: 10px;">
+                    {% csrf_token %}
+                    <button type="submit">Edit User</button>
+                </form>
+                <form action="{% url 'list_websites' %}" method="GET" style="margin-bottom: 10px;">
+                    {% csrf_token %}
+                    <button type="submit">List Websites</button>
+                </form>
+            </div>
+            <div class="content" id="main-content">
+                Main content goes here -->
+<!-- </div>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Your Website. All rights reserved.</p>
+        </div>
+    </div>
+
+    <script>
+        function loadContent(url) {
+            console.log("Fetching URL: " + url);  // Debug line to check URL being fetched
+            fetch(url)
+                .then(response => response.text())
+                .then(data => {
+                    // Update the 'main-content' with fetched data
+                    document.getElementById('main-content').innerHTML = data;
+                })
+                .catch(error => console.error('Error fetching content:', error));
+        }
+    </script>
+</body>
+</html> -->
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .wrapper {
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .header, .footer {
+            background-color: #14926b;
+            color: white;
+            padding: 20px ;
+            text-align: center;
+        }
+        .header h1, .footer p {
+            margin: 0;
+        }
+        .main-content {
+            flex: 1;
+            display: flex;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #eaedef;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar h3 {
+            text-align: center;
+        }
+        .sidebar form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .sidebar button {
+            width: 100%;
+            background-color: #3c50b5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .sidebar button:hover {
+            background-color: #13247a;
+        }
+        .content {
+            flex: 1;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="header">
+            <h1>Welcome to the Home Page</h1>
+        </div>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <h3>Components</h3>
+                <form action="{% url 'add_customer' %}" method="POST" style="margin-bottom: 10px;">
+                    {% csrf_token %}
+                    <button type="submit">Add Customer</button>
+                </form>
+                <form action="{% url 'add_website' %}" method="POST" style="margin-bottom: 10px;">
+                    {% csrf_token %}
+                    <button type="submit">Add Website</button>
+                </form>
+                <form action="{% url 'delete_user' %}" method="POST" style="margin-bottom: 10px;">
+                    {% csrf_token %}
+                    <button type="submit">Delete User</button>
+                </form>
+                <form action="{% url 'edit_user' %}" method="POST" style="margin-bottom: 10px;">
+                    {% csrf_token %}
+                    <button type="submit">Edit User</button>
+                </form>   
+                <form action="{% url 'list_websites' %}" method="GET" style="margin-bottom: 10px;">
+                    {% csrf_token %}
+                    <button type="submit">List Websites</button>
+                </form>               
+            </div>
+            <div class="content">
+                Main content goes here
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Your Website. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html> -->

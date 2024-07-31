@@ -1,0 +1,91 @@
+
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .wrapper {
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .header, .footer {
+            background-color: #14926b;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+        .header h1, .footer p {
+            margin: 0;
+        }
+        #tabs-content{
+            width:80%;
+        }
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f7f7f7;
+            padding: 20px;
+        }
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-container label {
+            margin-bottom: 5px;
+        }
+        .form-container input {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+        }
+        .form-container .button-group {
+            display: flex;
+            justify-content: space-between;
+        }
+        .form-container button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .form-container .submit-button {
+            background-color: #3c50b5;
+            color: white;
+        }
+        .form-container .submit-button:hover {
+            background-color: #13247a;
+        }
+        .form-container .cancel-button {
+            background-color: #ccc;
+        }
+        .form-container .cancel-button:hover {
+            background-color: #999;
+        }
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .success-message {
+            color: green;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    

@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>List Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        h2 {
+            color: #333;
+        }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+        select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h2>List Website</h2>
+    <form method="post" id="editForm">
+        {% csrf_token %}
+        <label for="user_id">Select User:</label>
+        <select name="user_id" id="user_id">
+            <option value="" disabled selected>Select a user</option>
+            {% for data in datas %}
+                <option value="{{ data.id }}">{{ data.username }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <br><br>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <br><br>
+        <label for="domain_name">Domain Name:</label>
+        <input type="text" id="domain_name" name="domain_name" required>
+        <br><br>
+        <label for="php_version">PHP Version:</label>
+        <input type="text" id="php_version" name="php_version" required>
+        <br><br>
+        <label for="new_password">New Password:</label>
+        <input type="password" id="new_password" name="new_password" required>
+        <br><br>
+        <label for="confirm_password">Confirm Password:</label>
+        <input type="password" id="confirm_password" name="confirm_password" required>
+        <br><br>
+        <button type="submit">Update User</button>
+    </form>
+
+    <script>
+        // Fetch user details and fill form fields on dropdown change
+        document.getElementById('user_id').addEventListener('change', function() {
+            var selectedUserId = this.value;
+            console.log('Selected User ID:', selectedUserId);
+            if (selectedUserId) {
+                fetch('/get_user_details/' + selectedUserId + '/')
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('username').value = data.username;
+                        document.getElementById('email').value = data.email;
+                        document.getElementById('domain_name').value = data.domain_name;
+                        document.getElementById('php_version').value = data.php_version;
+                        document.getElementById('new_password').value = data.password;
+                        document.getElementById('confirm_password').value = data.password;
+                    });
+            }
+        });
+        
+        document.getElementById('editForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            var formData = new FormData(this); // Create FormData object from form
+
+            fetch('/update_user/', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('User details updated successfully!');
+                    // Optionally handle success response (e.g., redirect to another page)
+                } else {
+                    alert('Failed to update user details: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error updating user details:', error);
+                alert('Failed to update user details. Please try again.');
+                // Optionally handle error response
+            });
+        });
+    </script>
+</body>
+</html>

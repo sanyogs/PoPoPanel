@@ -1,0 +1,363 @@
+{% extends 'user/home.html' %}
+
+{% block title %}Add Website{% endblock %}
+
+{% block content %}
+    <style>
+        body,
+        html {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            height: 100%;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        .header,
+        .footer {
+            background-color: #14926b;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1,
+        .footer p {
+            margin: 0;
+        }
+
+        .tabs {
+            width: 20%;
+            background-color: #09F;
+            border-radius: 5px;
+            overflow: hidden;
+            color: #FFF;
+            position: fixed; /* Fixes the sidebar in place */
+            height: 100%; /* Ensures sidebar spans full height */
+            top: 0;
+            left: 0;
+        }
+
+        ul#tabs-nav {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        ul#tabs-nav li {
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            background-color: #09F;
+            border-bottom: 1px solid #FFF;
+            font-weight: bold;
+        }
+
+        ul#tabs-nav li.active,
+        ul#tabs-nav li:hover {
+            background-color: #08E;
+        }
+
+        ul#tabs-nav li a {
+            text-decoration: none;
+            color: #FFF;
+        }
+
+        /* .content {
+            margin-left: 20%; 
+            padding: 20px;
+            background-color: #FFF;
+            border-left: 5px solid #09F;
+            flex: 1;
+        } */
+
+        /* .main-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-color: #f7f7f7;
+        } */
+
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-container label {
+            margin-bottom: 5px;
+        }
+
+        .form-container input,
+        .form-container select {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        .form-container .button-group {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .form-container button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .form-container .submit-button {
+            background-color: #3c50b5;
+            color: white;
+        }
+
+        .form-container .submit-button:hover {
+            background-color: #13247a;
+        }
+
+        .form-container .cancel-button {
+            background-color: #ccc;
+        }
+
+        .form-container .cancel-button:hover {
+            background-color: #999;
+        }
+
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .success-message {
+            color: green;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+    <div class="main-content">
+        <div class="form-container">
+            <h2>Add Website</h2>
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="{% if message.tags == 'error' %}error-message{% elif message.tags == 'success' %}success-message{% endif %}">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+            <form method="POST" action="{% url 'add_website' %}">
+                {% csrf_token %}
+                <label for="customer_email">Select Customer</label>
+                <select id="customer_email" name="customer_email" required>
+                    <option value="" disabled selected>Select Customer</option>
+                    {% for customer in customers %}
+                        <option value="{{ customer.email }}">{{ customer.email }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="website_name">Website Name</label>
+                <input type="text" id="website_name" name="website_name" required>
+
+                <label for="ftp_username">FTP Username</label>
+                <input type="text" id="ftp_username" name="ftp_username" required>
+
+                <label for="ftp_password">FTP Password</label>
+                <input type="password" id="ftp_password" name="ftp_password" required>
+
+                <label for="ftp_confirm_password">Confirm FTP Password</label>
+                <input type="password" id="ftp_confirm_password" name="ftp_confirm_password" required>
+
+                <label for="php_version">PHP Version</label>
+                <select id="php_version" name="php_version" required>
+                    <option value="" disabled selected>Select PHP Version</option>
+                    {% for version in php_versions %}
+                        <option value="{{ version }}">{{ version }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="database_allowed">Database Allowed</label>
+                <input type="number" id="database_allowed" name="database_allowed" required>
+
+                <div class="button-group">
+                    <button type="submit" class="submit-button">Submit</button>
+                    <!-- <button type="button" class="cancel-button" onclick="window.location.href='{% url 'home' %}'">Cancel</button> -->
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+
+
+
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Website</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .wrapper {
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .header, .footer {
+            background-color: #14926b;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+        .header h1, .footer p {
+            margin: 0;
+        }
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f7f7f7;
+            padding: 20px;
+        }
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-container label {
+            margin-bottom: 5px;
+        }
+        .form-container input, .form-container select {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+        }
+        .form-container .button-group {
+            display: flex;
+            justify-content: space-between;
+        }
+        .form-container button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .form-container .submit-button {
+            background-color: #3c50b5;
+            color: white;
+        }
+        .form-container .submit-button:hover {
+            background-color: #13247a;
+        }
+        .form-container .cancel-button {
+            background-color: #ccc;
+        }
+        .form-container .cancel-button:hover {
+            background-color: #999;
+        }
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="header">
+            <h1>Add Website</h1>
+        </div>
+
+        <div class="main-content">
+            <div class="form-container">
+                <h2>Add Website</h2>
+                {% if messages %}
+                    {% for message in messages %}
+                        <p class="{% if message.tags == 'error' %}error-message{% elif message.tags == 'success' %}success-message{% endif %}">{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
+                <form method="POST" action="{% url 'add_website' %}">
+                    {% csrf_token %}
+                    <label for="customer_email">Select Customer</label>
+                    <select id="customer_email" name="customer_email" required>
+                        <option value="" disabled selected>Select Customer</option>
+                        {% for customer in customers %}
+                            <option value="{{ customer.email }}">{{ customer.email }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label for="website_name">Website Name</label>
+                    <input type="text" id="website_name" name="website_name" required>
+
+                    <label for="ftp_username">FTP Username</label>
+                    <input type="text" id="ftp_username" name="ftp_username" required>
+
+                    <label for="ftp_password">FTP Password</label>
+                    <input type="password" id="ftp_password" name="ftp_password" required>
+
+                    <label for="ftp_confirm_password">Confirm FTP Password</label>
+                    <input type="password" id="ftp_confirm_password" name="ftp_confirm_password" required>
+
+                    <label for="php_version">PHP Version</label>
+                    <select id="php_version" name="php_version" required>
+                        <option value="" disabled selected>Select PHP Version</option>
+                        {% for version in php_versions %}
+                            <option value="{{ version }}">{{ version }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label for="database_allowed">Database Allowed</label>
+                    <input type="number" id="database_allowed" name="database_allowed" required>
+
+                    <div class="button-group">
+                        <button type="submit" class="submit-button">Submit</button>
+                        <button type="button" class="cancel-button">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Your Website. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html> -->
