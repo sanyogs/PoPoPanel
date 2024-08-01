@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .wrapper {
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .header, .footer {
+            background-color: #14926b;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+        .header h1, .footer p {
+            margin: 0;
+        }
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        .container {
+            width: 300px;
+            margin-top: 50px;
+        }
+        h2 {
+            text-align: center;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #3c50b5;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #3c50b5;
+        }
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="header">
+            <h1>Login Page</h1>
+        </div>
+
+        <div class="main-content">
+            <div class="container">
+                <h2>Login</h2>
+                {% if error_message %}
+                    <p class="error-message">{{ error_message }}</p>
+                {% endif %}
+                <form action="{% url 'index' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="username" placeholder="Username" required>
+                    <input type="password" name="password" placeholder="Password" required>
+                    <input type="submit" value="Login">
+                </form>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Your Website. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 300px;
+            margin: 0 auto;
+            padding-top: 100px;
+        }
+        h2 {
+            text-align: center;
+        }
+        input[type="text"],
+        input[type="password"],
+        input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2></h2>
+        
+        <form action="{% url 'index' %}" method="post">
+            {% csrf_token %}    
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+            <input type="text" name="domain_name" placeholder="Domain Name (.com)" required> <!-- Added domain name field -->
+            <!-- <select name="php_version" required>
+                <option value="">Select PHP Version</option>
+                <option value="php5.6">PHP 5.6</option>
+                <option value="php7.0">PHP 7.0</option>
+                <option value="php7.1">PHP 7.1</option>
+                <option value="php7.2">PHP 7.2</option>
+                <option value="php7.3">PHP 7.3</option>
+                <option value="php7.4">PHP 7.4</option>
+                <option value="php8.0">PHP 8.0</option>
+            </select>
+            <input type="submit" value="Sign Up">
+        </form>
+    </div>
+</body>
+</html> --> 

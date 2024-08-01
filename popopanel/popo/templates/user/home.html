@@ -1,0 +1,238 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Website{% endblock %}</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+        }
+
+        .header,
+        .footer {
+            background-color: #14926b;
+            color: white;
+            padding: 0;
+            text-align: center;
+            width: 98%;
+            position: fixed;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .header h1, .footer p{
+            margin: 0;
+        }
+
+        .header {
+            padding: 34px;
+            top: 0;
+        }
+
+        .footer {
+            bottom: 0;
+            padding: 20px
+        }
+
+        .content {
+            margin-top: 60px; /* Adjust based on header height */
+            margin-bottom: 60px; /* Adjust based on header and footer height */
+            padding: 20px;
+            background-color: #FFF;
+            flex: 1;
+            overflow-y: auto;
+        }
+        .main-content{
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f7f7f7;
+            padding: 20px;
+            padding-left: 220px;
+            padding-top: 30px;
+            box-sizing: border-box;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 68px; /* Adjust to be below the header */
+            bottom: 58px; /* Adjust to be above the footer */
+            width: 18%;
+            left: 0;
+            background-color: #09F;
+            color: #FFF;
+            overflow-y: auto;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            background-color: #09F;
+            border-bottom: 1px solid #FFF;
+            font-weight: bold;
+        }
+
+        .sidebar ul li.active,
+        .sidebar ul li:hover {
+            background-color: #08E;
+        }
+
+        .sidebar ul li a {
+            text-decoration: none;
+            color: #FFF;
+            display: block;
+        }
+        .logout-button {
+            position: absolute;
+            top: 20px;
+            right: 65px;
+            background-color: #ff4b4b;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .logout-button:hover {
+            background-color: #e60000;
+        }
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1001; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgb(0,0,0); 
+            background-color: rgba(0,0,0,0.4); 
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 300px;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        .yes-button {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .yes-button:hover {
+            background-color: #45a049;
+        }
+
+        .no-button {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .no-button:hover {
+            background-color: #da190b;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="header">
+        <form action="{% url 'logout' %}" method="POST" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="logout-button">Logout</button>
+        </form>
+    </div>
+    
+    <div class="sidebar">
+        <ul id="tabs-nav">
+            <li><a href="{% url 'add_customer' %}">Add Customer</a></li>
+            <li><a href="{% url 'add_website' %}">Add Website</a></li>
+            <li><a href="{% url 'list_websites' %}">List Website</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        {% block content %}
+        <!-- Page specific content will go here -->
+        {% if user_id %}
+            <p>User ID: {{ user_id }}</p>
+        {% endif %}
+        {% endblock %}
+    </div>
+
+    <div class="footer">
+        <p>Footer Content Here</p>
+    </div>
+
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p>Are you sure you want to log out?</p>
+            <button class="modal-button yes-button" onclick="confirmLogout()">Yes</button>
+            <button class="modal-button no-button" onclick="closeModal()">No</button>
+        </div>
+    </div>
+
+    <script>
+        function openModal() {
+            document.getElementById("myModal").style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById("myModal").style.display = "none";
+        }
+
+        function confirmLogout() {
+            window.location.href = "{% url 'login' %}"; // Redirect to login page
+        }
+    </script>
+</body>
+</html>
+ 
+
+

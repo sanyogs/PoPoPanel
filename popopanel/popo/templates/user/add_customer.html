@@ -1,0 +1,293 @@
+{% extends 'user/home.html' %}
+
+{% block title %}Add Customer{% endblock %}
+
+{% block content %}
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .wrapper {
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .header h1, .footer p {
+            margin: 0;
+        }
+        /* .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f7f7f7;
+            padding: 20px;
+            padding-left: 220px;
+            padding-top: 30px; 
+            box-sizing: border-box; 
+        } */
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-container label {
+            margin-bottom: 5px;
+        }
+        .form-container input {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+        }
+        .form-container .button-group {
+            display: flex;
+            justify-content: space-between;
+        }
+        .form-container button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .form-container .submit-button {
+            background-color: #3c50b5;
+            color: white;
+        }
+        .form-container .submit-button:hover {
+            background-color: #13247a;
+        }
+        .form-container .cancel-button {
+            background-color: #ccc;
+        }
+        .form-container .cancel-button:hover {
+            background-color: #999;
+        }
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .success-message {
+            color: green;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+
+    <div class="wrapper">
+        <!-- <div class="header">
+            <h1>Add Customer</h1>
+        </div> -->
+        <div class="main-content" id="add-customer-wrap">
+            <div class="form-container">
+                <h2>Add Customer</h2>
+                {% if messages %}
+                    {% for message in messages %}
+                        <p class="{% if message.tags == 'error' %}error-message{% elif message.tags == 'success' %}success-message{% endif %}">{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
+                <form method="POST" action="{% url 'add_customer' %}">
+                    {% csrf_token %}
+                    {% if user_id %}
+                        <input type="hidden" name="user_id" value="{{ user_id }}">
+                    {% endif %}
+                    <label for="full_name">Full Name</label>
+                    <input type="text" id="full_name" name="full_name" required>
+                    
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+
+                    <label for="confirm_password">Confirm Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" required>
+
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+
+                    <label for="address1">Address 1</label>
+                    <input type="text" id="address1" name="address1" required>
+
+                    <label for="address2">Address 2</label>
+                    <input type="text" id="address2" name="address2">
+
+                    <label for="country">Country</label>
+                    <input type="text" id="country" name="country" required>
+
+                    <label for="city">City</label>
+                    <input type="text" id="city" name="city" required>
+
+                    <div class="button-group">
+                        <button type="submit" class="submit-button">Submit</button>
+                        <!-- <button type="button" class="cancel-button" onclick="window.location.href='{% url 'home' %}'">Cancel</button> -->
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="footer">
+            <p>&copy; 2024 Your Website. All rights reserved.</p>
+        </div>
+    </div>
+{% endblock %}
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Customer</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .wrapper {
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .header, .footer {
+            background-color: #14926b;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+        .header h1, .footer p {
+            margin: 0;
+        }
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f7f7f7;
+            padding: 20px;
+        }
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-container label {
+            margin-bottom: 5px;
+        }
+        .form-container input {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+        }
+        .form-container .button-group {
+            display: flex;
+            justify-content: space-between;
+        }
+        .form-container button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .form-container .submit-button {
+            background-color: #3c50b5;
+            color: white;
+        }
+        .form-container .submit-button:hover {
+            background-color: #13247a;
+        }
+        .form-container .cancel-button {
+            background-color: #ccc;
+        }
+        .form-container .cancel-button:hover {
+            background-color: #999;
+        }
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .success-message {
+            color: green;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="header">
+            <h1>Add Customer</h1>
+        </div>
+
+        <div class="main-content">
+            <div class="form-container">
+                <h2>Add Customer</h2>
+                {% if messages %}
+                    {% for message in messages %}
+                        <p class="{% if message.tags == 'error' %}error-message{% elif message.tags == 'success' %}success-message{% endif %}">{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
+                <form method="POST" action="{% url 'add_customer' %}">
+                    {% csrf_token %}
+                    <label for="full_name">Full Name</label>
+                    <input type="text" id="full_name" name="full_name" required>
+
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+
+                    <label for="confirm_password">Confirm Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" required>
+
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+
+                    <label for="address1">Address 1</label>
+                    <input type="text" id="address1" name="address1" required>
+
+                    <label for="address2">Address 2</label>
+                    <input type="text" id="address2" name="address2">
+
+                    <label for="country">Country</label>
+                    <input type="text" id="country" name="country" required>
+
+                    <label for="city">City</label>
+                    <input type="text" id="city" name="city" required>
+
+                    <div class="button-group">
+                        <button type="submit" class="submit-button">Submit</button>
+                        <button type="button" class="cancel-button">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="footer">
+            <p>&copy; 2024 Your Website. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html> -->
