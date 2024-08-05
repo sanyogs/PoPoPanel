@@ -1,0 +1,15 @@
+<!-- website_info.html -->
+{% extends 'user/home.html' %}
+
+{% block title %}Website Information{% endblock %}
+
+{% block content %}
+    <h1>{{ website.website_name }}</h1>
+    <p>FTP Username: {{ website.ftp_username }}</p>
+    <p>PHP Version: {{ website.php_version }}</p>
+    <p>Database Allowed: {{ website.database_allowed }}</p>
+    <p>Server Path: {{ website.server_path }}</p>
+    
+
+    <a href="{% url 'home' %}" class="action-button">Back to Home</a>
+{% endblock %}

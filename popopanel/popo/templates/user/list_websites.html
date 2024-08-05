@@ -17,14 +17,6 @@
             flex-direction: column;
         }
 
-        /* .header,
-        .footer {
-            background-color: #14926b;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        } */
-
         .header h1,
         .footer p {
             margin: 0;
@@ -67,17 +59,10 @@
             color: #FFF;
         }
 
-        /* .main-content {
-            margin-left: 20%;
-            padding: 20px;
-            background-color: #f7f7f7;
-            flex: 1;
-            box-sizing: border-box; 
-        } */
-         .main-content{
+        .main-content{
             flex-direction: column;
             padding-left: 320px;
-         }
+        }
 
         table {
             width: 60%;
@@ -167,7 +152,7 @@
             <tbody>
                 {% for website in websites %}
                     <tr>
-                        <td>{{ website.website_name }}</td>
+                        <td><a href="{% url 'website_info' website.id %}">{{ website.website_name }}</a></td>
                         <td>
                             <a href="{% url 'update_website' website.id %}" class="action-button">Update</a>
                             <a href="{% url 'delete_website' website.id %}" class="action-button delete-button">Delete</a>
@@ -179,6 +164,7 @@
         <a href="{% url 'home' %}" class="action-button">Back to Home</a>
     </div>
 {% endblock %}
+
 
 
 <!-- 

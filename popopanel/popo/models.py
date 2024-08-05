@@ -49,7 +49,7 @@ class Website(models.Model):
     database_allowed = models.IntegerField()
 
     def __str__(self):
-        return self.full_name
+        return self.website_name
 
 
 # dj/models.py

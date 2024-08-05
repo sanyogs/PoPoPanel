@@ -39,6 +39,16 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.sessions.models import Session
 from django.utils import timezone
 from popo.models import User
+import logging
+from django.shortcuts import render, get_object_or_404
+from popo.models import Website
+
+logger = logging.getLogger(__name__)
+
+def website_info(request, id):
+    website = get_object_or_404(Website, id=id)
+    logger.info(f"Website: {website}")  # Check if this appears in your logs
+    return render(request, 'user/website_info.html', {'website': website})
 
 
 @login_required
