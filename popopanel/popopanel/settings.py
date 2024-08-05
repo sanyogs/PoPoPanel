@@ -90,12 +90,23 @@ WSGI_APPLICATION = 'popopanel.wsgi.application'
 #    }
 # }
 
+# DATABASES = {
+#      'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'popo',
+#         'USER': 'sahil',
+#         'PASSWORD': 'rashmit@123',
+#         'HOST': 'localhost',  # You can change this if your MySQL server is hosted elsewhere
+#         'PORT': '3306',
+#      }
+#  }
+
 DATABASES = {
      'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'popo',
-        'USER': 'sahil',
-        'PASSWORD': 'rashmit@123',
+        'USER': 'root',
+        'PASSWORD': 'sahil',
         'HOST': 'localhost',  # You can change this if your MySQL server is hosted elsewhere
         'PORT': '3306',
      }
