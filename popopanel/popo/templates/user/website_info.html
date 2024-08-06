@@ -77,11 +77,19 @@
         width: 75%;
         display: flex;
         justify-content: center;
-        gap: 20px; /* Space between icons */
+        gap: 100px; /* Space between icons */
         padding: 30px;
+        margin-right: 225px;
+    }
+    .icon-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
     }
 
     .icon {
+        
         width: 200px;
         height: 100px;
         margin-right: 8px;
@@ -90,6 +98,15 @@
     .back-button {
         text-align: center;
         margin-top: 20px; /* Add spacing between the table and the back button */
+    }
+    .icon-label {
+        font-size: 1em; /* Adjust font size as needed */
+        color: #333; /* Adjust text color as needed */
+        text-decoration: none;
+    }
+
+    .icon-label:hover {
+        text-decoration: underline; /* Optional: underline on hover */
     }
 
     .action-button {
@@ -104,6 +121,10 @@
     .action-button:hover {
         background-color: #13247a;
     }
+    .database-icon {
+        width: 58px; /* Adjust width as needed */
+        height: 42px; /* Adjust height as needed */
+    }
 </style>
 
 <div class="main-content">
@@ -115,19 +136,29 @@
     </div>
 
     <div class="icons-container">
-        <a href="#" class="icon" title="FTP">
-            <img src="{% static 'icons/ftp_icon.png' %}" alt="FTP Icon">
-        </a>
-        <a href="#" class="icon" title="Database">
-            <img src="{% static 'icons/database_icon.png' %}" alt="Database Icon">
-        </a>
-        <a href="#" class="icon" title="PHP">
-            <img src="{% static 'icons/php_icon.png' %}" alt="PHP Icon">
-        </a>
+        <div class="icon-wrapper">
+            <a href="#" title="FTP" class="icon-link">
+                <img src="{% static 'css/icons/ftp_icon.png' %}" alt="FTP" class="database-icon">
+            </a>
+            <a href="#" class="icon-label" title="FTP">FTP</a>
+        </div>
+        <div class="icon-wrapper">
+            <a href="#" title="Database" class="icon-link">
+                <img src="{% static 'css/icons/database_icon.png' %}" alt="Database" class="database-icon">
+            </a>
+            <a href="#" class="icon-label" title="Database">Database</a>
+        </div>
+        <div class="icon-wrapper">
+            <a href="#" title="PHP" class="icon-link">
+                <img src="{% static 'css/icons/php_icon.png' %}" alt="PHP" class="database-icon">
+            </a>
+            <a href="#" class="icon-label" title="PHP">PHP</a>
+        </div>
     </div>
-
+    
+<!-- 
     <div class="back-button">
         <a href="{% url 'list_websites' %}" class="action-button">Back to List</a>
-    </div>
+    </div> -->
 </div>
 {% endblock %}

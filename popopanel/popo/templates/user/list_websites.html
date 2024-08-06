@@ -141,22 +141,22 @@
     </style>
 
     <div class="main-content" data-user-id="{{ user_id }}">
-        <h1>List of Web</h1>
+        <h1>List of Websites</h1>
         <table>
             <thead>
                 <tr>
                     <th>Website Name</th>
-                    <th>Actions</th>
+                    <!-- <th>Actions</th> -->
                 </tr>
             </thead>
             <tbody>
                 {% for website in websites %}
                     <tr>
                         <td><a href="{% url 'website_info' website.id %}">{{ website.website_name }}</a></td>
-                        <td>
-                            <a href="{% url 'update_website' website.id %}" class="action-button">Update</a>
+                        <!-- <td>
+                            <a href="{% url 'update_website' website.id %}" class="action-button">view</a>
                             <a href="{% url 'delete_website' website.id %}" class="action-button delete-button">Delete</a>
-                        </td>
+                        </td> -->
                     </tr>
                 {% endfor %}
             </tbody>
