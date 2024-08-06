@@ -137,10 +137,10 @@
 
     <div class="icons-container">
         <div class="icon-wrapper">
-            <a href="#" title="FTP" class="icon-link">
-                <img src="{% static 'css/icons/ftp_icon.png' %}" alt="FTP" class="database-icon">
+            <a href="{% url 'ftp_users' website.id %}" title="FTP" class="icon-link">
+                <img src="{% static 'css/icons/ftp_icon.png' %}" alt="FTP" class="icon">
             </a>
-            <a href="#" class="icon-label" title="FTP">FTP</a>
+            <a href="{% url 'ftp_users' website.id %}" class="icon-label" title="FTP">FTP</a>
         </div>
         <div class="icon-wrapper">
             <a href="#" title="Database" class="icon-link">

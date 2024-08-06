@@ -48,7 +48,14 @@ logger = logging.getLogger(__name__)
 def website_info(request, id):
     website = get_object_or_404(Website, id=id)
     logger.info(f"Website: {website}")  # Check if this appears in your logs
-    return render(request, 'user/website_info.html', {'website': website})
+    return render(request, 'user/website_info.html', {'website': website})\
+    
+def ftp_users(request, website_id):
+    website = get_object_or_404(Website, id=website_id)
+    context = {
+        'website': website,
+    }
+    return render(request, 'user/ftp_users.html', context)
 
 
 @login_required

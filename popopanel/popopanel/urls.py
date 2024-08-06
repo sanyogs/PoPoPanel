@@ -24,4 +24,5 @@ urlpatterns = [
     path('update_website/<int:website_id>/', views.update_website, name='update_website'),
     path('delete_website/<int:website_id>/', views.delete_website, name='delete_website'),
     path('website/<int:id>/', views.website_info, name='website_info'),
+    path('ftp-users/<int:website_id>/', views.ftp_users, name='ftp_users'),
     ]
