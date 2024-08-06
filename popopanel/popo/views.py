@@ -52,11 +52,18 @@ def website_info(request, id):
     
 def ftp_users(request, website_id):
     website = get_object_or_404(Website, id=website_id)
-    context = {
-        'website': website,
-    }
-    return render(request, 'user/ftp_users.html', context)
-
+    if request.method == 'POST':
+        ftp_username = request.POST.get('ftp_username')
+        ftp_password = request.POST.get('ftp_password')
+        if ftp_username and ftp_password:
+            website.ftp_username = ftp_username
+            website.ftp_password = ftp_password
+            website.save()
+            messages.success(request, 'FTP details updated successfully.')
+            return redirect('ftp_users', website_id=website.id)
+        else:
+            messages.error(request, 'Please fill in both fields.')
+    return render(request, 'user/ftp_users.html', {'website': website})
 
 @login_required
 def HomePage(request):
