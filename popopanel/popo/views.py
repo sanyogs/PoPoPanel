@@ -72,7 +72,6 @@ def HomePage(request):
 
 
 
-
 @login_required
 def list_websites(request):
     user_id = request.user.id
