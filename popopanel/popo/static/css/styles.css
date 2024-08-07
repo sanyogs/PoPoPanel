@@ -833,7 +833,6 @@ body,
             font-size: 1em; /* Adjust font size as needed */
             color: #333; /* Adjust text color as needed */
             text-decoration: none;
-            display: inline;
         }
     
         .icon-label:hover {
