@@ -326,6 +326,44 @@ def add_customer(request):
     return render(request, 'user/add_customer.html', {'user_id': user_id})
 
 
+import subprocess
+
+def create_ftp_user(ftp_username, ftp_password):
+    try:
+        # Check if the user already exists
+        user_exists = subprocess.run(['id', '-u', ftp_username], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        
+        if user_exists.returncode == 0:
+            print(f"FTP user {ftp_username} already exists. Skipping user creation.")
+        else:
+            # Add the FTP user and set their password
+            subprocess.run(['sudo', 'useradd', '-m', ftp_username], check=True)
+            print(f"FTP user {ftp_username} created successfully.")
+
+        # Set or update the password for the FTP user
+        subprocess.run(['sudo', 'chpasswd'], input=f'{ftp_username}:{ftp_password}'.encode(), check=True)
+        
+        # Ensure the vsftpd user configuration directory exists
+        vsftpd_user_conf_dir = "/etc/vsftpd/user_conf/"
+        subprocess.run(['sudo', 'mkdir', '-p', vsftpd_user_conf_dir], check=True)
+
+        # Create vsftpd configuration for the user
+        vsftpd_user_conf = f"{vsftpd_user_conf_dir}/{ftp_username}"
+        vsftpd_config_content = f"""
+local_root=/home/{ftp_username}
+write_enable=YES
+local_umask=022
+file_open_mode=0755
+        """
+        subprocess.run(f'sudo sh -c "echo \'{vsftpd_config_content}\' > {vsftpd_user_conf}"', shell=True, check=True)
+        
+        print(f"FTP configuration for {ftp_username} completed successfully.")
+    except subprocess.CalledProcessError as e:
+        error_message = e.stderr.decode() if e.stderr else str(e)
+        raise Exception(f'Error creating FTP user: {error_message}')
+
+
+
 @csrf_protect
 @login_required
 def add_website(request):
@@ -356,6 +394,8 @@ def add_website(request):
             # Create user without home directory
             create_user_command = ['sudo', 'useradd', ftp_username]
             subprocess.run(create_user_command, check=True)
+
+            create_ftp_user(ftp_username, ftp_password)
 
             # Create necessary directories with sudo
             create_dirs_command = ['sudo',  '-u', 'root','mkdir', '-p', f'/home/{ftp_username}/{website_name}/public_html', f'/home/{ftp_username}/{website_name}/logs']
