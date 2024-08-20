@@ -27,3 +27,23 @@ class CustomBackend(BaseBackend):
             return User.objects.get(pk=user_id)
         except User.DoesNotExist:
             return None
+
+from django.contrib.auth.backends import BaseBackend
+from popo.models import Customer
+
+class CustomerBackend(BaseBackend):
+    def authenticate(self, request, username=None, password=None, **kwargs):
+        try:
+            # Authenticate customer using plain text password comparison
+            customer = Customer.objects.get(email=username)
+            if customer.password == password:
+                return customer
+        except Customer.DoesNotExist:
+            return None
+
+    def get_user(self, customer_id):
+        try:
+            # Retrieve customer by customer_id
+            return Customer.objects.get(id=customer_id)
+        except Customer.DoesNotExist:
+            return None

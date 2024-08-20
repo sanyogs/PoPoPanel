@@ -52,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'popo.middleware.RedirectAuthenticatedUserMiddleware',
 ]
 
 ROOT_URLCONF = 'popopanel.urls'
@@ -135,8 +136,15 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = 'popo.User'
 AUTHENTICATION_BACKENDS = [
     'popo.auth_backends.CustomBackend',
+    'popo.auth_backends.CustomerBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+# settings.py
+SESSION_COOKIE_AGE = 1209600  # Two weeks in seconds
+SESSION_SAVE_EVERY_REQUEST = True  # Save the session to the database on every request
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Use database for session storage
+
 
 
 # Internationalization

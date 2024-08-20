@@ -209,9 +209,8 @@
         <ul id="tabs-nav">
             <!-- <li><a href="{% url 'add_customer' %}">Add Customer</a></li> -->
             <!-- <li><a href="{% url 'add_website' %}">Add Website</a></li> -->
-            <li><a href="{% url 'list_customers' %}">List Customer</a></li>
-            <li><a href="{% url 'list_websites' %}">List Website</a></li>
-            
+            <!-- <li><a href="{% url 'list_websites' %}">List Website</a></li> -->
+            <!-- <li><a href="{% url 'list_customers' %}">List Customer</a></li> -->
 
         </ul>
     </div>
@@ -239,9 +238,6 @@
     </div>
 
     <script>
-        if (window.history.replaceState) {
-            window.history.replaceState(null, null, window.location.href);
-        }
         function openModal() {
             document.getElementById("myModal").style.display = "block";
         }
@@ -256,6 +252,3 @@
     </script>
 </body>
 </html>
- 
-
-

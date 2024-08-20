@@ -142,6 +142,7 @@
 
     <div class="main-content" data-user-id="{{ user_id }}">
         <h1>List of Websites</h1>
+        <a href="{% url 'add_website' %}" class="add-customerbtn">Add Website</a>
         <table>
             <thead>
                 <tr>
@@ -163,6 +164,8 @@
         </table>
         <a href="{% url 'home' %}" class="action-button">Back to Home</a>
     </div>
+    
+    
 {% endblock %}
 
 

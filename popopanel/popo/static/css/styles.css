@@ -56,7 +56,7 @@ html {
     padding: 20px;
     padding-left: 220px;
     /* Adjust based on sidebar width */
-    padding-top: 30px;
+    padding-top: 0px;
     /* Adjust based on header height */
     padding-bottom: 167px;
     /* Adjust based on footer height */
@@ -470,8 +470,9 @@ button:hover {
 
 .heading h1 {
     font-size: 2em;
+    /* margin-top: 10px; */
     font-weight: bold;
-    color: #333;
+    color: #0c0c0c;
 }
 
 .form-group {
@@ -489,8 +490,8 @@ button:hover {
 
 .form-group input[type="text"],
 .form-group input[type="password"] {
-    width: 140%;
-    padding: 12px;
+    width: 125%;
+    padding: 8px;
     border: 2px solid #ddd;
     border-radius: 10px;
     box-sizing: border-box;
@@ -504,6 +505,15 @@ button:hover {
     width: 100%;
     max-width: 500px;
 }
+.add-customerbtn {
+    background-color: #3c50b5;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-right: 530px;
+    margin-bottom: 20px;
+}
 
 .action-button {
     background-color: #3c50b5;
@@ -511,6 +521,8 @@ button:hover {
     padding: 10px 20px;
     text-decoration: none;
     border-radius: 4px;
+    margin-right: 50px;
+    margin-bottom: 20px;
     transition: background-color 0.3s;
     text-align: center;
     font-size: 1em;
@@ -665,12 +677,14 @@ table {
 th,
 td {
     padding: 10px;
+    padding-left: 30px;
     border: 1px solid #ddd;
     text-align: left;
 }
 
 th {
-    background-color: #f4f4f4;
+    background-color: #4CAF50;
+    text-align: center;
 }
 
 th:last-child {
@@ -750,7 +764,7 @@ label {
 input[type="text"] {
     width: 100%;
     padding: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 0px;
     border: 1px solid #ddd;
     border-radius: 5px;
 }
@@ -786,6 +800,7 @@ button:hover {
 /* } */
 .heading {
     text-align: center;
+   
 
 }
 
@@ -908,4 +923,52 @@ button:hover {
     /* Adjust width as needed */
     height: 42px;
     /* Adjust height as needed */
+}
+
+.customer-table {
+    width: 60%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.customer-table thead {
+    background-color: #f4f4f4;
+}
+
+.customer-table th {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    background-color: #4CAF50;
+    color: white;
+}
+.customer-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+
+
+.customer-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.customer-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.customer-table td[colspan="2"] {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+.right-side {
+    float: right;
+    width: 150px; /* Adjust the width as needed */
+    margin-top: 20px; /* Space from the top */
+    text-align: right; /* Align text to the right */
 }

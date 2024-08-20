@@ -1,0 +1,42 @@
+{% extends 'user/home.html' %}
+
+{% block title %}List of Customers{% endblock %}
+
+{% block content %}
+    <div class="main-content">
+        <h1>List of Customers</h1>
+        <a href="{% url 'add_customer' %}" class="add-customerbtn">Add Customer</a>
+        <table class="customer-table">
+            <thead>
+                <tr>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if customers %}
+                    {% for customer in customers %}
+                        <tr>
+                            <td>
+                                {% if customer.id %}
+                                    <a href="{% url 'customer_detail' customer.id %}">
+                                        {{ customer.full_name }}
+                                    </a>
+                                {% else %}
+                                    {{ customer.full_name }} (ID is missing)
+                                {% endif %}
+                            </td>                                                       
+                            <td>{{ customer.email }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="2">No customers found.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+

@@ -1,0 +1,37 @@
+{% extends 'user/home.html' %}
+
+{% block title %}{{ customer.full_name }}'s Websites{% endblock %}
+
+{% block content %}
+    <div class="main-content">
+        <h1>{{ customer.full_name }}'s Websites</h1>
+        
+        {% if websites %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Website Name</th>
+                        <th>FTP Username</th>
+                        <th>PHP Version</th>
+                        <th>Database Allowed</th>
+                        <!-- Add more columns as needed -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for website in websites %}
+                        <tr>
+                            <td><a href="{% url 'website_info' website.id %}">{{ website.website_name }}</a></td>
+                            <td>{{ website.ftp_username }}</td>
+                            <td>{{ website.php_version }}</td>
+                            <td>{{ website.database_allowed }}</td>
+                            <!-- Add more columns as needed -->
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No websites found for this customer.</p>
+        {% endif %}
+    </div>
+{% endblock %}
+

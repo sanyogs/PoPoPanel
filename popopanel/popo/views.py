@@ -1,46 +1,21 @@
-from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 import logging
 import subprocess
 from django.contrib import messages
-from django.http import HttpResponse
-# from dj.models import MyTable
 import os
-# from dj.models import MyTable
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
-import subprocess
-from django.views.decorators.http import require_POST
-from django.http import JsonResponse
-logger = logging.getLogger(__name__)
-from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from django.views.decorators.csrf import csrf_protect
-
-from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_protect
 from popo.models import Customer , Website
-import os
-import subprocess
 import time
 from django.shortcuts import get_object_or_404, redirect, render
-from django.contrib import messages
-from django.views.decorators.csrf import csrf_protect
-from popo.models import Website
-
-import subprocess
-import logging
-from django.shortcuts import render, redirect
-from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.sessions.models import Session
 from django.utils import timezone
 from popo.models import User
-import logging
-from django.shortcuts import render, get_object_or_404
 from popo.models import Website
 
 logger = logging.getLogger(__name__)
@@ -48,7 +23,33 @@ logger = logging.getLogger(__name__)
 def website_info(request, id):
     website = get_object_or_404(Website, id=id)
     logger.info(f"Website: {website}")  # Check if this appears in your logs
-    return render(request, 'user/website_info.html', {'website': website})\
+    return render(request, 'user/website_info.html', {'website': website})
+# def website_info(request, id):
+#     website = get_object_or_404(Website, id=id)
+#     logger.info(f"Website: {website}")  # Check if this appears in your logs
+#     return render(request, 'user/website_info.html', {'website': website})
+
+# views.py
+from django.shortcuts import render, get_object_or_404
+from popo.models import Customer, Website
+
+
+def customer_detail(request, customer_id):
+    customer = get_object_or_404(Customer, id=customer_id)
+    websites = Website.objects.filter(customer=customer)
+    return render(request, 'user/customer_detail.html', {
+        'customer': customer,
+        'websites': websites
+    })
+
+
+@login_required
+def list_customers(request):
+    customers = Customer.objects.all()
+    # for customer in customers:
+    #     print(f"Customer ID: {customer.id}, Full Name: {customer.full_name}")
+    return render(request, 'user/list_customers.html', {'customers': customers})
+
     
 def ftp_users(request, website_id):
     website = get_object_or_404(Website, id=website_id)
@@ -64,19 +65,261 @@ def ftp_users(request, website_id):
         else:
             messages.error(request, 'Please fill in both fields.')
     return render(request, 'user/ftp_users.html', {'website': website})
+    
 
-@login_required
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from popo.models import Customer
+
 def HomePage(request):
-    user_id = request.user.id
-    return render(request, 'user/home.html', {'user_id': user_id})
+    if request.user.is_authenticated:
+        # Admin user is logged in
+        user_id = request.user.id
+        return render(request, 'user/home.html', {'user_id': user_id})
 
+    return redirect('login')
+
+from django.shortcuts import render, redirect
+from popo.models import Customer
+
+def userhome(request):
+    customer_id = request.session.get('customer_id')
+    if customer_id:
+        try:
+            # Fetch the customer using the ID from the session
+            customer = Customer.objects.get(id=customer_id)
+            return render(request, 'user/userhome.html', {'customer': customer})
+        except Customer.DoesNotExist:
+            # If the customer does not exist, clear the session and redirect to login
+            request.session.flush()
+            return redirect('login')
+    else:
+        # No customer ID in session, redirect to login
+        return redirect('login')
 
 
 @login_required
 def list_websites(request):
     user_id = request.user.id
     websites = Website.objects.all()
-    return render(request, 'user/list_websites.html', {'websites': websites,'user_id': user_id})
+    return render(request, 'user/list_websites.html', {'websites': websites,'user_id': user_id })
+
+
+import subprocess
+import os
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from django.urls import reverse
+
+
+def update_ftp_user(request, website_id):
+    if request.method == 'POST':
+        # Retrieve the website instance
+        website = get_object_or_404(Website, id=website_id)
+
+        # Get the current, new, and confirm FTP details from the form
+        current_ftp_password = request.POST.get('current_ftp_password')
+        new_ftp_password = request.POST.get('new_ftp_password')
+        confirm_ftp_password = request.POST.get('confirm_ftp_password')
+        new_ftp_username = request.POST.get('ftp_username')
+        old_ftp_username = website.ftp_username
+
+        if website.ftp_password != current_ftp_password:
+            messages.error(request, "Current FTP password is incorrect.")
+            return redirect(reverse('ftp_users', args=[website_id]))
+
+        if new_ftp_password != confirm_ftp_password:
+            messages.error(request, "New FTP passwords do not match.")
+            return redirect(reverse('ftp_users', args=[website_id]))
+
+        vsftpd_user_conf_dir = "/etc/vsftpd/user_conf/"
+        old_vsftpd_user_conf = f"{vsftpd_user_conf_dir}/{old_ftp_username}"
+        new_vsftpd_user_conf = f"{vsftpd_user_conf_dir}/{new_ftp_username}"
+
+        apache_conf = f"/etc/apache2/sites-available/{website.website_name}.conf"
+        apache_config_content = f"""
+<VirtualHost *:80>
+    ServerAdmin webmaster@{website.website_name}
+    ServerName {website.website_name}
+    DocumentRoot /home/{new_ftp_username}/{website.website_name}/public_html/
+    <Directory /home/{new_ftp_username}/{website.website_name}/public_html/>
+        AllowOverride all
+        Require all granted
+        Options FollowSymlinks
+        DirectoryIndex home.html
+        Allow from all
+    </Directory>
+    ErrorLog /home/{new_ftp_username}/{website.website_name}/logs/error.log
+    CustomLog /home/{new_ftp_username}/{website.website_name}/logs/access.log combined
+</VirtualHost>
+        """
+
+        try:
+            # If the FTP username has changed, handle user and configuration updates
+            if old_ftp_username != new_ftp_username:
+                # Rename the user
+                subprocess.run(['sudo', 'usermod', '-l', new_ftp_username, old_ftp_username], check=True)
+
+                # Rename the home directory
+                old_home_dir = f'/home/{old_ftp_username}'
+                new_home_dir = f'/home/{new_ftp_username}'
+                if os.path.exists(old_home_dir):
+                    subprocess.run(['sudo', 'usermod', '-d', new_home_dir, '-m', new_ftp_username], check=True)
+                else:
+                    subprocess.run(['sudo', 'mkdir', '-p', new_home_dir], check=True)
+                    subprocess.run(['sudo', 'usermod', '-d', new_home_dir, '-m', new_ftp_username], check=True)
+
+                # Ensure the group exists or create it
+                try:
+                    subprocess.run(['sudo', 'groupadd', new_ftp_username], check=True)
+                except subprocess.CalledProcessError:
+                    # Ignore the error if the group already exists
+                    pass
+
+                # Set correct ownership and permissions
+                subprocess.run(['sudo', 'chown', '-R', f'{new_ftp_username}:{new_ftp_username}', new_home_dir], check=True)
+                subprocess.run(['sudo', 'chmod', '-R', '755', new_home_dir], check=True)
+
+                # Delete the old vsftpd configuration
+                if os.path.exists(old_vsftpd_user_conf):
+                    subprocess.run(['sudo', 'rm', '-f', old_vsftpd_user_conf], check=True)
+                    print(f"Deleted old vsftpd config: {old_vsftpd_user_conf}")
+
+                # Update Apache virtual host configuration
+                subprocess.run(f'sudo sh -c "echo \'{apache_config_content}\' > {apache_conf}"', shell=True, check=True)
+                print(f"Apache virtual host configuration updated: {apache_conf}")
+
+                # Update website's FTP username
+                website.ftp_username = new_ftp_username
+
+            # Update the password
+            subprocess.run(['sudo', 'chpasswd'], input=f'{new_ftp_username}:{new_ftp_password}'.encode(), check=True)
+            website.ftp_password = new_ftp_password
+
+            # Ensure the vsftpd user configuration directory exists
+            subprocess.run(['sudo', 'mkdir', '-p', vsftpd_user_conf_dir], check=True)
+
+            # Create the new vsftpd configuration for the user
+            vsftpd_config_content = f"""
+local_root=/home/{new_ftp_username}
+write_enable=YES
+local_umask=022
+file_open_mode=0755
+            """
+            subprocess.run(f'sudo sh -c "echo \'{vsftpd_config_content}\' > {new_vsftpd_user_conf}"', shell=True, check=True)
+
+            # Restart vsftpd to apply changes
+            subprocess.run(['sudo', 'systemctl', 'restart', 'vsftpd'], check=True)
+
+            # Save the changes to the website instance
+            website.save()
+
+            # Provide a success message
+            messages.success(request, f"FTP details for {website.website_name} updated successfully.")
+
+        except subprocess.CalledProcessError as e:
+            error_message = e.stderr.decode() if e.stderr else str(e)
+            messages.error(request, f"Error updating FTP user: {error_message}")
+            print(f"Debug Info: Command '{e.cmd}' returned non-zero exit status {e.returncode}.")
+
+        # Redirect to the FTP details page
+        return redirect(reverse('ftp_users', args=[website_id]))
+
+    # If the request method is not POST, redirect to the website details page
+    return redirect(reverse('website_info', args=[website_id]))
+
+
+
+# import subprocess
+# import os
+# from django.shortcuts import get_object_or_404, redirect
+# from django.contrib import messages
+# from django.urls import reverse
+
+
+# def update_ftp_user(request, website_id):
+#     if request.method == 'POST':
+#         # Retrieve the website instance
+#         website = get_object_or_404(Website, id=website_id)
+
+#         # Get the new FTP details from the form
+#         new_ftp_username = request.POST.get('ftp_username')
+#         new_ftp_password = request.POST.get('ftp_password')
+#         old_ftp_username = website.ftp_username
+
+#         try:
+#             vsftpd_user_conf_dir = "/etc/vsftpd/user_conf/"
+#             old_vsftpd_user_conf = f"{vsftpd_user_conf_dir}/{old_ftp_username}"
+#             new_vsftpd_user_conf = f"{vsftpd_user_conf_dir}/{new_ftp_username}"
+
+#             # If the FTP username has changed, rename the existing user and remove the old vsftpd config
+#             if old_ftp_username != new_ftp_username:
+#                 # Rename the user
+#                 subprocess.run(['sudo', 'usermod', '-l', new_ftp_username, old_ftp_username], check=True)
+
+#                 # Rename the home directory
+#                 old_home_dir = f'/home/{old_ftp_username}'
+#                 new_home_dir = f'/home/{new_ftp_username}'
+#                 if os.path.exists(old_home_dir):
+#                     subprocess.run(['sudo', 'usermod', '-d', new_home_dir, '-m', new_ftp_username], check=True)
+#                 else:
+#                     subprocess.run(['sudo', 'mkdir', '-p', new_home_dir], check=True)
+#                     subprocess.run(['sudo', 'usermod', '-d', new_home_dir, '-m', new_ftp_username], check=True)
+
+#                 # Ensure the group exists or create it
+#                 try:
+#                     subprocess.run(['sudo', 'groupadd', new_ftp_username], check=True)
+#                 except subprocess.CalledProcessError:
+#                     # Ignore the error if the group already exists
+#                     pass
+
+#                 # Set correct ownership and permissions
+#                 subprocess.run(['sudo', 'chown', '-R', f'{new_ftp_username}:{new_ftp_username}', new_home_dir], check=True)
+#                 subprocess.run(['sudo', 'chmod', '-R', '755', new_home_dir], check=True)
+
+#                 # Delete the old vsftpd configuration
+#                 if os.path.exists(old_vsftpd_user_conf):
+#                     subprocess.run(['sudo', 'rm', '-f', old_vsftpd_user_conf], check=True)
+#                     print(f"Deleted old vsftpd config: {old_vsftpd_user_conf}")
+
+#                 website.ftp_username = new_ftp_username
+
+#             # Update the password
+#             subprocess.run(['sudo', 'chpasswd'], input=f'{new_ftp_username}:{new_ftp_password}'.encode(), check=True)
+#             website.ftp_password = new_ftp_password
+
+#             # Ensure the vsftpd user configuration directory exists
+#             subprocess.run(['sudo', 'mkdir', '-p', vsftpd_user_conf_dir], check=True)
+
+#             # Create the new vsftpd configuration for the user
+#             vsftpd_config_content = f"""
+# local_root=/home/{new_ftp_username}
+# write_enable=YES
+# local_umask=022
+# file_open_mode=0755
+#             """
+#             subprocess.run(f'sudo sh -c "echo \'{vsftpd_config_content}\' > {new_vsftpd_user_conf}"', shell=True, check=True)
+
+#             # Restart vsftpd to apply changes
+#             subprocess.run(['sudo', 'systemctl', 'restart', 'vsftpd'], check=True)
+
+#             # Save the changes to the website instance
+#             website.save()
+
+#             # Provide a success message
+#             messages.success(request, f"FTP details for {website.website_name} updated successfully.")
+
+#         except subprocess.CalledProcessError as e:
+#             error_message = e.stderr.decode() if e.stderr else str(e)
+#             messages.error(request, f"Error updating FTP user: {error_message}")
+#             print(f"Debug Info: Command '{e.cmd}' returned non-zero exit status {e.returncode}.")
+
+#         # Redirect to the FTP details page
+#         return redirect(reverse('ftp_users', args=[website_id]))
+
+#     # If the request method is not POST, redirect to the website details page
+#     return redirect(reverse('website_info', args=[website_id]))
+
 
 
 @csrf_protect
@@ -289,6 +532,7 @@ def delete_website(request, website_id):
 @login_required
 def add_customer(request):
     user_id = request.user.id
+    
     if request.method == 'POST':
         full_name = request.POST.get('full_name')
         password = request.POST.get('password')
@@ -323,10 +567,8 @@ def add_customer(request):
         messages.success(request, 'Customer added successfully')
         return redirect('add_customer')  # Redirect to the same page after success
 
-    return render(request, 'user/add_customer.html', {'user_id': user_id})
+    return render(request, 'user/add_customer.html', {'user_id': user_id })
 
-
-import subprocess
 
 def create_ftp_user(ftp_username, ftp_password):
     try:
@@ -367,6 +609,7 @@ file_open_mode=0755
 @csrf_protect
 @login_required
 def add_website(request):
+    customers = Customer.objects.all()
     user_id = request.user.id
     if request.method == 'POST':
         customer_email = request.POST.get('customer_email')
@@ -410,10 +653,10 @@ def add_website(request):
             subprocess.run(['sudo', '-u', ftp_username, 'touch', f'/home/{ftp_username}/{website_name}/logs/error.log', f'/home/{ftp_username}/{website_name}/logs/access.log'], check=True)
 
             # Create index.html file using touch command
-            subprocess.run(['sudo', '-u', ftp_username, 'touch', f'/home/{ftp_username}/{website_name}/public_html/home.html'], check=True)
+            # subprocess.run(['sudo', '-u', ftp_username, 'touch', f'/home/{ftp_username}/{website_name}/public_html/home.html'], check=True)
 
             # Set permissions for index.html
-            subprocess.run(['sudo', 'chmod', '755', f'/home/{ftp_username}/{website_name}/public_html/home.html'], check=True)
+            # subprocess.run(['sudo', 'chmod', '755', f'/home/{ftp_username}/{website_name}/public_html/home.html'], check=True)
 
             # Modify user's shell configuration file to change directory upon login
             subprocess.run(f'sudo sh -c "echo \'cd /home/{ftp_username}/{website_name}\' >> \'/home/{ftp_username}/.bashrc\'"', shell=True, check=True)
@@ -486,7 +729,95 @@ def add_website(request):
 
 
 
+# from django.contrib.auth import authenticate, login
+# from django.shortcuts import render, redirect
+# from django.contrib import messages
+# from popo.models import User, Customer
+# from popo.auth_backends import CustomBackend, CustomerBackend
+
+# def login_view(request):
+#     if request.method == 'POST':
+#         username = request.POST['username']
+#         password = request.POST['password']
+
+#         print(f"Username: {username}")
+#         print(f"Entered Password: {password}")
+
+#         # First, attempt to authenticate as an admin user
+#         user = CustomBackend().authenticate(request, username=username, password=password)
+
+#         if user is not None:
+#             print("Admin password match found, logging in user.")
+#             login(request, user, backend='popo.auth_backends.CustomBackend')  # Specify the backend
+            
+#             # Print user details to the terminal
+#             print(f"Authenticated User: {user.username}")
+#             print(f"User Email: {user.emailid}")
+#             print(f"User is Active: {user.is_active}")
+#             print(f"User is Admin: {user.is_admin}")
+
+#             return redirect('home')  # Redirect to the home page after successful login
+        
+#         else:
+#             # If admin login fails, check for customer login
+#             customer = CustomerBackend().authenticate(request, username=username, password=password)
+#             if customer is not None:
+#                 print("Customer login successful.")
+                
+#                 # Manually log the customer in by setting the session
+#                 request.session['customer_id'] = customer.id
+#                 request.session['customer_email'] = customer.email
+#                 request.session.modified = True
+#                 print(f"Session Data: {request.session.items()}")
+                
+#                 # Try redirecting to a different page first
+#                 return redirect('userhome')
+#             else:
+#                 print("Password mismatch or user does not exist.")
+#                 messages.error(request, 'Invalid username or password')
+
+#     return render(request, 'user/index.html')
+
+
+
+# def logout_view(request):
+#     # Get the current user's ID
+#     user_id = request.user.id
+
+#     # Print user_id for debugging
+#     print(f"User ID: {user_id}")
+
+#     # Invalidate all sessions for the user
+#     sessions = Session.objects.filter(expire_date__gte=timezone.now())
+#     print(sessions)
+#     for session in sessions:
+#         data = session.get_decoded()
+#         print(data)
+#         if data.get('_auth_user_id') == str(user_id):
+#             session.delete()
+
+#     # Log out the user
+#     logout(request)
+#     return redirect('index')
+
+
+
+from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.sessions.models import Session
+from django.utils import timezone
+from popo.models import User, Customer
+from popo.auth_backends import CustomBackend, CustomerBackend
+
+from django.utils.cache import add_never_cache_headers
+
 def login_view(request):
+    # Check if the user is already authenticated
+    if request.user.is_authenticated:
+        print("User is already authenticated, redirecting to home page.")
+        return redirect('home')  # Redirect to the home page if already logged in
+
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -494,13 +825,13 @@ def login_view(request):
         print(f"Username: {username}")
         print(f"Entered Password: {password}")
 
-        # Authenticate the user using the custom backend
-        user = authenticate(request, username=username, password=password)
+        # First, attempt to authenticate as an admin user
+        user = CustomBackend().authenticate(request, username=username, password=password)
 
         if user is not None:
-            print("Password match found, logging in user.")
-            login(request, user)
-            
+            print("Admin password match found, logging in user.")
+            login(request, user, backend='popo.auth_backends.CustomBackend')  # Specify the backend
+
             # Print user details to the terminal
             print(f"Authenticated User: {user.username}")
             print(f"User Email: {user.emailid}")
@@ -508,11 +839,30 @@ def login_view(request):
             print(f"User is Admin: {user.is_admin}")
 
             return redirect('home')  # Redirect to the home page after successful login
+        
         else:
-            print("Password mismatch or user does not exist.")
-            messages.error(request, 'Invalid username or password')
+            # If admin login fails, check for customer login
+            customer = CustomerBackend().authenticate(request, username=username, password=password)
+            if customer is not None:
+                print("Customer login successful.")
 
-    return render(request, 'user/index.html')
+                # Manually log the customer in by setting the session
+                request.session['customer_id'] = customer.id
+                request.session['customer_email'] = customer.email
+                request.session.modified = True
+                print(f"Session Data: {request.session.items()}")
+
+                # Redirect to the user home page
+                return redirect('userhome')
+            else:
+                print("Password mismatch or user does not exist.")
+                messages.error(request, 'Invalid username or password')
+
+    # Prevent browser from caching the login page
+    response = render(request, 'user/index.html')
+    add_never_cache_headers(response)  # Prevent caching
+    return response
+
 
 def logout_view(request):
     # Get the current user's ID
@@ -533,6 +883,3 @@ def logout_view(request):
     # Log out the user
     logout(request)
     return redirect('index')
-
-
-
