@@ -100,6 +100,10 @@
     <div class="heading">
         <h1>Update FTP Details</h1>
     </div>
+    <div>
+        <a href="{% url 'additional_ftp' website.id %}" class="add-customerbtn">Additonal ftp</a>
+    </div>
+    
     {% if messages %}
         <ul class="error-message">
             {% for message in messages %}

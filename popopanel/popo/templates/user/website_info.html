@@ -149,12 +149,17 @@
             <a href="#" class="icon-label" title="Database">Database</a>
         </div>
         <div class="icon-wrapper">
-            <a href="#" title="PHP" class="icon-link">
+            <a href="{% url 'update_php_version' website.id %}" title="PHP" class="icon-link">
                 <img src="{% static 'css/icons/php_icon.png' %}" alt="PHP" class="icon">
             </a>
-            <a href="#" class="icon-label" title="PHP">PHP</a>
+            <a href="{% url 'update_php_version' website.id %}" class="icon-label" title="PHP"> PHP</a>
+        </div>
+        <div class="icon-wrapper">
+            <a href="{% url 'file_manager' website.id %}" title="File Manager" class="icon-link">
+                <img src="{% static 'css/icons/filemanager.png' %}" alt="File Manager" class="icon">
+            </a>
+            <a href="{% url 'file_manager' website.id %}" class="icon-label" title="File Manager">File Manager</a>
         </div>
     </div>
-    
 </div>
 {% endblock %}

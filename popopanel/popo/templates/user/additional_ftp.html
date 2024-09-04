@@ -1,0 +1,182 @@
+{% extends 'user/home.html' %}
+{% load static %}
+{% block title %}Add Additional FTP{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="heading">
+        <h1>Add Additional FTP</h1>
+    </div>
+
+    {% if messages %}
+        <ul class="error-message">
+            {% for message in messages %}
+                <li class="{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <form method="post" action="{% url 'additional_ftp' website.id %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <h1>Add Additional FTP</h1>
+            <p>Website: {{ website.website_name }}</p>  
+        </div>
+        <div class="form-group">
+            <label for="username">FTP Username:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">FTP Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div class="form-group">
+            <label for="specific_directory">Select Directory:</label>
+            <div class="directory-select"></div>
+            <div style="display: flex; width: 100%; justify-content: center; align-items: center;">
+                <input type="text" id="specific_directory" name="specific_directory" readonly required>
+                <img src="{% static 'css/icons/ftpmanager.png' %}" id="openModal" alt="Select Directory" class="icon" style="width: 20%; margin-top: 10px; cursor: pointer;">
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="action-button">Create FTP</button>
+            <a href="{% url 'ftp_users' website.id %}" class="action-button cancel">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<!-- Modal Structure -->
+<div id="directoryModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Select Directory</h2>
+        <ul id="directoryList">
+            {% for item in directories %}
+                <li class="directory">
+                    <span class="toggle">►</span>
+                    <a href="#" data-directory="{{ item.name }}" class="directory-item">{{ item.name }}</a>
+                    {% if item.subdirectories %}
+                        <ul class="subdirectory-list" style="display: none;">
+                            {% for sub in item.subdirectories %}
+                                <li>
+                                    <span class="toggle">►</span>
+                                    <a href="#" data-directory="{{ item.name }}/{{ sub.name }}" class="directory-item">{{ sub.name }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </li>
+            {% empty %}
+                <li>No directories available</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<!-- Modal Styles -->
+<style>
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    /* height: 30%; */
+    margin-top: 50px;
+    text-align: left;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#directoryList li {
+    list-style-type: none;
+    margin: 5px 0;
+}
+
+#directoryList li a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+#directoryList li a:hover {
+    text-decoration: underline;
+}
+
+.toggle {
+    cursor: pointer;
+    margin-right: 5px;
+    font-size: 16px;
+}
+
+.subdirectory-list {
+    margin-left: 2px;
+    display: none;
+}
+</style>
+
+<!-- Modal JavaScript -->
+<script>
+document.getElementById('openModal').onclick = function() {
+    document.getElementById('directoryModal').style.display = 'block';
+}
+
+document.getElementsByClassName('close')[0].onclick = function() {
+    document.getElementById('directoryModal').style.display = 'none';
+}
+
+document.querySelectorAll('#directoryList .toggle').forEach(function(toggle) {
+    toggle.onclick = function(e) {
+        const subList = this.nextElementSibling.nextElementSibling;
+        if (subList.style.display === 'none') {
+            subList.style.display = 'block';
+            this.textContent = '▼';
+        } else {
+            subList.style.display = 'none';
+            this.textContent = '►';
+        }
+    }
+});
+
+document.querySelectorAll('#directoryList .directory-item').forEach(function(anchor) {
+    anchor.ondblclick = function(e) {
+        e.preventDefault();
+        const fullPath = this.getAttribute('data-directory');
+        document.getElementById('specific_directory').value = fullPath;
+        document.getElementById('directoryModal').style.display = 'none';
+    }
+});
+
+window.onclick = function(event) {
+    if (event.target == document.getElementById('directoryModal')) {
+        document.getElementById('directoryModal').style.display = 'none';
+    }
+}
+</script>
+
+{% endblock %}
+

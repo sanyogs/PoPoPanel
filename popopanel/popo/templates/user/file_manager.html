@@ -1,0 +1,91 @@
+{% extends 'user/home.html' %}
+
+{% block title %}File Manager{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <h1>File Manager for {{ website.website_name }}</h1>
+
+    <!-- Option to go to the parent directory -->
+    {% if parent_dir %}
+        <p>
+            <a href="{% url 'file_manager' website.id %}?dir={{ parent_dir }}">
+                Back to Parent Directory
+            </a>
+        </p>
+    {% endif %}
+
+    {% if entries %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Permissions</th>
+                    <th>Size (bytes)</th>
+                    <th>Owner</th>
+                    <th>Group</th>
+                    <th>Last Modified</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in entries %}
+                    <tr>
+                        <td>
+                            {% if entry.is_dir %}
+                                <a href="{% url 'file_manager' website.id %}?dir={{ current_dir }}{{ entry.name }}/">
+                                    {{ entry.name }}
+                                </a>
+                            {% else %}
+                                {{ entry.name }}
+                            {% endif %}
+                        </td>
+                        <td>{{ entry.permissions }}</td>
+                        <td>{{ entry.size }}</td>
+                        <td>{{ entry.owner }}</td>
+                        <td>{{ entry.group }}</td>
+                        <td>{{ entry.modified_time }}</td>
+                        <td>
+                            
+                            <div class="dropdown">
+                                <button class="dropbtn">Actions</button>
+                                <div class="dropdown-content">
+                                    {% if entry.is_dir %}
+                                        <a href="{% url 'file_manager' website.id %}?dir={{ current_dir }}{{ entry.name }}/">Open</a>
+                                    {% else %}
+                                        <a href="#">View</a>
+                                    {% endif %}
+                                    <a href="#">Rename</a>
+                                    <a href="#">Delete</a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No files or directories found.</p>
+    {% endif %}
+</div>
+
+<!-- JavaScript to toggle the dropdown -->
+<script>
+    document.addEventListener('click', function(event) {
+        // Close all dropdowns if clicked outside
+        var dropdowns = document.querySelectorAll('.dropdown-content');
+        dropdowns.forEach(function(dropdown) {
+            dropdown.style.display = 'none';
+        });
+
+        // Toggle the clicked dropdown
+        if (event.target.classList.contains('dropbtn')) {
+            var dropdown = event.target.nextElementSibling;
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+    });
+</script>
+
+{% endblock %}
+
+

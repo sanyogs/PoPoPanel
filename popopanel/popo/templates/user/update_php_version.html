@@ -1,0 +1,44 @@
+{% extends 'user/home.html' %}
+
+{% block title %}Update PHP Version{% endblock %}
+
+{% block content %}
+
+<div class="update-php-container">
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <h1>Update PHP Version</h1>
+    
+    <div class="website-info">
+        <label><strong>Website Name:</strong></label>
+        <p>{{ website.website_name }}</p>
+        
+        <!-- <label><strong>Domain Name:</strong></label>
+        <p>{{ website.domain_name }}</p>
+         -->
+        <label><strong>Current PHP Version:</strong></label>
+        <p>{{ website.php_version }}</p>
+    </div>
+
+    <form method="post" class="php-update-form">
+        {% csrf_token %}
+        <label for="new_php_version">Select New PHP Version:</label>
+        <select name="new_php_version" id="new_php_version">
+            <option value="7.4" {% if website.php_version == '7.4' %}selected{% endif %}>PHP 7.4</option>
+            <option value="8.0" {% if website.php_version == '8.0' %}selected{% endif %}>PHP 8.0</option>
+            <option value="8.1" {% if website.php_version == '8.1' %}selected{% endif %}>PHP 8.1</option>
+            <option value="8.2" {% if website.php_version == '8.2' %}selected{% endif %}>PHP 8.2</option>
+        </select>
+        <button type="submit" class="action-button">Update PHP Version</button>
+    </form>
+
+    <a href="{% url 'update_php_version' website.id %}" class="back-button">Back to Website Details</a>
+</div>
+{% endblock %}
+
