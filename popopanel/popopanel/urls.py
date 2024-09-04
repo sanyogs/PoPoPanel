@@ -33,4 +33,5 @@ urlpatterns = [
     path('file_manager/<int:website_id>/', views.file_manager, name='file_manager'),
     path('website/<int:website_id>/additional_ftp/', views.additional_ftp, name='additional_ftp'),
     path('update_php_version/<int:website_id>/', views.update_php_version, name='update_php_version'),
+    path('website/<int:website_id>/add-database/', views.add_database, name='add_database'),
     ]

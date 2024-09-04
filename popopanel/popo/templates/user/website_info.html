@@ -5,127 +5,7 @@
 {% load static %}
 
 {% block content %}
-<!-- <style>
-    .main-content {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: space-between;
-        background-color: #f7f7f7;
-        padding: 20px;
-        margin-left: 100px ;
-        /* padding-left: 220px;  */
-        padding-top: 15px; /* Adjust based on header height */
-        padding-bottom: 80px; /* Adjust based on footer height */
-        box-sizing: border-box;
-        overflow-y: auto;
-    }
-    .heading {
-        text-align: center;
-        
-    }
-    .heading h1 {
-        margin-top: -100px;
-         /* Remove default margins */
-        padding: 20px; /* Add custom padding if needed */
-        margin-right: 290px;
-        font-size: 1.5em; /* Custom font size */
-        font-weight: bold; /* Custom font weight */
-        color: #333; /* Custom text color */
-    }
-    .image-container {
-        width: 4cm;
-        height: 4cm;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 800px;
-        border: 1px solid #ddd; /* Optional: add a border for better visibility */
-        box-sizing: border-box;
-    }
 
-    .heading img {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: contain;
-    }
-    .table-container {
-        width: 75%;
-        display: flex;
-        justify-content: center;
-        margin-bottom: 20px; /* Add spacing between the table and the back button */
-        padding: 30px;
-        }
-
-    .info-table {
-        width: 60%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
-    }
-
-    .info-table th, .info-table td {
-        padding: 10px;
-        border: 1px solid #ddd;
-        text-align: left;
-    }
-
-    .info-table th {
-        background-color: #f4f4f4;
-    }
-    .icons-container {
-        width: 75%;
-        display: flex;
-        justify-content: center;
-        gap: 100px; /* Space between icons */
-        padding: 30px;
-        margin-right: 225px;
-    }
-    .icon-wrapper {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-
-    .icon {
-        
-        width: 200px;
-        height: 100px;
-        margin-right: 8px;
-    }
-
-    .back-button {
-        text-align: center;
-        margin-top: 20px; /* Add spacing between the table and the back button */
-    }
-    .icon-label {
-        font-size: 1em; /* Adjust font size as needed */
-        color: #333; /* Adjust text color as needed */
-        text-decoration: none;
-    }
-
-    .icon-label:hover {
-        text-decoration: underline; /* Optional: underline on hover */
-    }
-
-    .action-button {
-        background-color: #3c50b5;
-        color: white;
-        padding: 5px 10px;
-        text-decoration: none;
-        border-radius: 5px;
-        transition: background-color 0.3s;
-    }
-
-    .action-button:hover {
-        background-color: #13247a;
-    }
-    .icon {
-        width: 58px; /* Adjust width as needed */
-        height: 42px; /* Adjust height as needed */
-    }
-</style> -->
 
 <div class="main-content">
     <div class="image-container">
@@ -143,11 +23,11 @@
             <a href="{% url 'ftp_users' website.id %}" class="icon-label" title="FTP">FTP</a>
         </div>
         <div class="icon-wrapper">
-            <a href="#" title="Database" class="icon-link">
-                <img src="{% static 'css/icons/database_icon.png' %}" alt="Database" class="icon">
+            <a href="{% url 'add_database' website.id %}" title="Add Database" class="icon-link">
+                <img src="{% static 'css/icons/database_icon.png' %}" alt="Add Database" class="icon">
             </a>
-            <a href="#" class="icon-label" title="Database">Database</a>
-        </div>
+            <a href="{% url 'add_database' website.id %}" class="icon-label" title="Add Database">Add Database</a>
+        </div>        
         <div class="icon-wrapper">
             <a href="{% url 'update_php_version' website.id %}" title="PHP" class="icon-link">
                 <img src="{% static 'css/icons/php_icon.png' %}" alt="PHP" class="icon">

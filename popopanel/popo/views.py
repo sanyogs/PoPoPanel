@@ -1005,6 +1005,81 @@ chdir = /
         print(f"Error during PHP installation: {e}")
 
 
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from .models import Website  # Import your Website model
+import subprocess
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from .models import Website
+
+def add_database(request, website_id):
+    # Fetch the website object based on the provided website_id
+    selected_website = get_object_or_404(Website, id=website_id)
+
+    if request.method == "POST":
+        # Retrieve the input values from the POST request
+        database_name = request.POST.get('database_name')
+        database_user = request.POST.get('database_user')
+        database_password = request.POST.get('database_password')
+
+        if database_name and database_user and database_password:
+            try:
+                # Retrieve root database credentials from database_details table
+                with connection.cursor() as cursor:
+                    cursor.execute("SELECT username, password FROM database_detials WHERE id = 1;")
+                    result = cursor.fetchone()
+                    if result:
+                        username, password = result
+                    else:
+                        raise RuntimeError("Database credentials not found in the database_details table.")
+
+                # MySQL command prefix with root credentials
+                mysql_command = ['mysql', '-u', username, f'-p{password}']
+
+                # Create the database
+                subprocess.run(
+                    mysql_command + ['-e', f"CREATE DATABASE {database_name};"],
+                    check=True, capture_output=True, text=True
+                )
+
+                # Create the database user
+                subprocess.run(
+                    mysql_command + ['-e', f"CREATE USER '{database_user}'@'localhost' IDENTIFIED BY '{database_password}';"],
+                    check=True, capture_output=True, text=True
+                )
+
+                # Grant all privileges to the new user on the new database
+                subprocess.run(
+                    mysql_command + ['-e', f"GRANT ALL PRIVILEGES ON {database_name}.* TO '{database_user}'@'localhost';"],
+                    check=True, capture_output=True, text=True
+                )
+
+                # Flush privileges to ensure all changes take effect
+                subprocess.run(
+                    mysql_command + ['-e', "FLUSH PRIVILEGES;"],
+                    check=True, capture_output=True, text=True
+                )
+
+                # Display a success message
+                messages.success(request, f"Database {database_name} created successfully!")
+                # Redirect to the website details page
+                return redirect('website_details', website_id=selected_website.id)
+            except subprocess.CalledProcessError as e:
+                # Handle errors in the subprocess execution
+                error_message = e.stderr if e.stderr else str(e)
+                messages.error(request, f"An error occurred while creating the database and user: {error_message}")
+        else:
+            # Display an error message if required fields are missing
+            messages.error(request, "All fields are required.")
+
+    # Render the add database template
+    return render(request, 'user/add_database.html', {'website': selected_website})
+
 import random
 import string
 from django.db import connection

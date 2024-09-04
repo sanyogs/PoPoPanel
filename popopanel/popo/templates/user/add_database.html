@@ -1,0 +1,30 @@
+{% extends 'user/home.html' %}
+
+{% block title %}Add Database{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="heading">
+        <h1>Add Additional Database for {{ website.website_name }}</h1>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="database_name">Database Name</label>
+            <input type="text" id="database_name" name="database_name" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="database_user">Database Username</label>
+            <input type="text" id="database_user" name="database_user" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="database_password">Database Password</label>
+            <input type="password" id="database_password" name="database_password" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Create Database</button>
+    </form>
+</div>
+{% endblock %}
+
+
